@@ -27,10 +27,15 @@ ARG SDK_JAVA_VERSION=22.3.r19-grl
 # Install java
 RUN bash -c "source $HOME/.sdkman/bin/sdkman-init.sh && sdk install java $SDK_JAVA_VERSION"
 
-RUN $HOME/.sdkman/candidates/java/current/bin/java -version
+# Set environment variables for current user
+ENV HOME /home/cubetiq
+ENV JAVA_HOME="$HOME/.sdkman/candidates/java/current"
+ENV PATH="$PATH:$JAVA_HOME/bin"
 
 # Verify installation
-RUN bash -c "source $HOME/.sdkman/bin/sdkman-init.sh && java -version"
+RUN echo "export JAVA_HOME=$JAVA_HOME" >> $HOME/.bashrc
+RUN echo "export PATH=$PATH" >> $HOME/.bashrc
+RUN java -version
 
 # Copy entrypoint script
 COPY entrypoint.sh /entrypoint.sh
